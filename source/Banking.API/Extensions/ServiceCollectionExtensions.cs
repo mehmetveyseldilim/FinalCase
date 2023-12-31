@@ -106,6 +106,7 @@ namespace Banking.API.Extensions
         public static IServiceCollection ConfigureValidations(this IServiceCollection services)
         {
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTOValidator>();
+            services.AddScoped<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
 
 
             return services;

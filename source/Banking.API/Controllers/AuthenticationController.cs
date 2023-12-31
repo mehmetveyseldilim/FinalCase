@@ -1,4 +1,3 @@
-
 using Banking.API.ActionFilters;
 using Banking.Domain.Contracts;
 using Banking.Shared.DTOs.Request;
@@ -56,6 +55,29 @@ namespace Banking.API.Controllers
 
             _logger.LogDebug("Returning create user");
             return StatusCode(201);
+        }
+
+        [HttpPost("login")]
+        [ServiceFilter(typeof(FluentValidationFilter))]
+        public async Task<ActionResult<ReadTokenDTO>> Authenticate(LoginUserDTO loginUserDTO)
+        {
+            _logger.LogDebug("Register User Method");
+            _logger.LogDebug("User for authentication: {@loginUserDTO}", loginUserDTO);
+
+            if (!await _authenticationService.ValidateUser(loginUserDTO)) 
+            {
+                _logger.LogError("User login validation has been failed. Returning Unauthorized");
+                return new BadRequestObjectResult("User login validation has been failed. Incorrect username or password");
+            }
+
+            _logger.LogDebug("User authentication successfull.");
+            _logger.LogDebug("Creating Access and Refresh Token");
+            var tokenDto = await _authenticationService.CreateToken(populateExp: true);
+
+            _logger.LogDebug("User token is: {@tokenDto}", tokenDto);
+            _logger.LogDebug("Returning Ok with token dto");
+
+            return Ok(tokenDto);
         }
     }
 }
