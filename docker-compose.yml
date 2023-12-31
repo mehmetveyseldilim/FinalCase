@@ -1,0 +1,33 @@
+version: '3.5'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  banking-postgres:
+    container_name: banking-postgres-container
+    image: postgres:latest
+    ports:
+      - "6432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: BankingDb
+    networks:
+      - dev
+    restart: unless-stopped
+
+  banking-pgadmin:
+    container_name: banking-pgadmin-container
+    image: dpage/pgadmin4:latest
+    depends_on:
+      - banking-postgres
+    ports:
+      - "6060:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - dev
+    restart: unless-stopped
