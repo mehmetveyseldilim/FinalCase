@@ -1,4 +1,4 @@
-version: '3.5'
+version: '1.1'
 
 networks:
   dev:
@@ -7,9 +7,9 @@ networks:
 services:
   banking-postgres:
     container_name: banking-postgres-container
-    image: postgres:latest
+    image: postgres:15.5
     ports:
-      - "6432:5432"
+      - "6477:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
@@ -20,7 +20,7 @@ services:
 
   banking-pgadmin:
     container_name: banking-pgadmin-container
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:8.1
     depends_on:
       - banking-postgres
     ports:
