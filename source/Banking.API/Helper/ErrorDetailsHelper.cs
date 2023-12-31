@@ -15,5 +15,14 @@ namespace Banking.API.Helper
                 Message = errorMessages
             };
         }
+
+        public static ErrorDetails CreateErrorDetails(string errorMessage)
+        {
+            return new ErrorDetails()
+            {
+                StatusCode = 400,
+                Message = new List<string>() { errorMessage }
+            };
+        }
     }
 }

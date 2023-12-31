@@ -1,5 +1,7 @@
 using Banking.API.ActionFilters;
+using Banking.API.Helper;
 using Banking.Domain.Contracts;
+using Banking.Shared;
 using Banking.Shared.DTOs.Request;
 using Banking.Shared.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +69,9 @@ namespace Banking.API.Controllers
             if (!await _authenticationService.ValidateUser(loginUserDTO)) 
             {
                 _logger.LogError("User login validation has been failed. Returning Unauthorized");
-                return new BadRequestObjectResult("User login validation has been failed. Incorrect username or password");
+                var errorDetailsObject = ErrorDetailsHelper.CreateErrorDetails(ExceptionErrorMessages.InvalidLoginErrorMessage);
+
+                return new BadRequestObjectResult(errorDetailsObject);
             }
 
             _logger.LogDebug("User authentication successfull.");
