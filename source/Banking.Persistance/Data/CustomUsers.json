@@ -1,0 +1,56 @@
+[
+    {
+        "Id" : 1,
+        "FirstName" : "AdminFirstName",
+        "LastName" : "AdminLastName",
+        "UserName" : "57416725928",
+        "Email" : "testadminuser1@gmail.com",
+        "PhoneNumber" : "+905012312966",
+        "Password" : "TestAdminUser1Password-24",
+        "Roles" : ["Administrator", "User"]
+
+    },
+    {
+        "Id" : 2,
+        "FirstName" : "TestSupportFirstName",
+        "LastName" : "TesManagerLastName",
+        "UserName" : "27295417344",
+        "Email" : "testmanager@gmail.com",
+        "PhoneNumber" : "+905037712936",
+        "Password" : "TestManagerPassword-12",
+        "Roles" : ["Support", "User"]
+
+    },
+    {
+        "Id" : 3,
+        "FirstName" : "UserFirstName1",
+        "LastName" : "UserLastName2",
+        "UserName" : "95745395412",
+        "Email" : "testuser1@gmail.com",
+        "PhoneNumber" : "+905012312966",
+        "Password" : "TestUser1Password-11",
+        "Roles" : ["User"]
+
+    },
+    {
+        "Id" : 4,
+        "FirstName" : "UserFirstName2",
+        "LastName" : "UserLastName2",
+        "UserName" : "61942419602",
+        "Email" : "testuser2@gmail.com",
+        "PhoneNumber" : "+905072317912",
+        "Password" : "TestUser2Password-13",
+        "Roles" : ["User"]
+
+    },
+    {
+        "Id" : 5,
+        "FirstName" : "UserFirstName3",
+        "LastName" : "UserLastName3",
+        "UserName" : "14173994738",
+        "Email" : "testuser3@gmail.com",
+        "PhoneNumber" : "+905232317915",
+        "Password" : "TestUser3Password-15",
+        "Roles" : ["User"]
+    }
+]

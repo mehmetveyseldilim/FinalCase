@@ -1,0 +1,19 @@
+[
+    {
+        "Id" : 1,
+        "Name" : "Administrator",
+        "NormalizedName" : "ADMINISTRATOR"
+    },
+    
+    {
+        "Id" : 2,
+        "Name" : "Support",
+        "NormalizedName" : "SUPPORT"
+    },
+
+    {
+        "Id" : 3,
+        "Name" : "User",
+        "NormalizedName" : "USER"
+    }
+]
