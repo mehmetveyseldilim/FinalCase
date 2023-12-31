@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Banking.Persistance\Banking.Persistance.csproj" />
+    <ProjectReference Include="..\Banking.Shared\Banking.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
