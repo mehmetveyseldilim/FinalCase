@@ -11,7 +11,8 @@ namespace Banking.Domain.Profiles
         {
             //. source -> destination
             CreateMap<CreateUserDTO, CustomUser>();
-            CreateMap<CustomUser, ReadUserDTO>();
+            CreateMap<CustomUser, ReadUserDTO>()
+                .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => src.UserRoles.Select(role => role.Role.Name)));
         }
 
     }

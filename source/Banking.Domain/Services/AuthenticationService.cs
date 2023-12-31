@@ -45,10 +45,8 @@ namespace Banking.Domain.Services
 
         }
 
-        public async Task<ReadUserDTO> GetUserByIdAsync(int id)
+        private async Task<CustomUser> GetCustomUserByIdAsync(int id)
         {
-            _logger.LogDebug($"In {nameof(GetUserByIdAsync)} method");
-            _logger.LogDebug("Searching for user based on provided id with value: {@id}",id);
             var user = await _userManager.FindByIdAsync(id.ToString());
 
             if(user == null) 
@@ -57,6 +55,33 @@ namespace Banking.Domain.Services
                 throw new UserNotFound(id);
             }
 
+            return user;
+        }
+
+        public async Task<ReadUserDTO> UpdateUserRoles(int id, UpdateUserRoles updateUserRoles)
+        {
+            _logger.LogDebug($"In {nameof(UpdateUserRoles)} method");
+            _logger.LogDebug("Update user roles dto: {@updateUserRoles}",updateUserRoles);
+
+            var user = await GetCustomUserByIdAsync(id);
+            await CheckIfRoleExists(updateUserRoles.UserRoles!);
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _userManager.AddToRolesAsync(user, updateUserRoles.UserRoles!);
+
+            var mappedUser = _mapper.Map<ReadUserDTO>(user);
+
+            return mappedUser;
+
+        }
+
+        public async Task<ReadUserDTO> GetUserByIdAsync(int id)
+        {
+            _logger.LogDebug($"In {nameof(GetUserByIdAsync)} method");
+            _logger.LogDebug("Searching for user based on provided id with value: {@id}",id);
+            var user = await GetCustomUserByIdAsync(id);
+
             _logger.LogInformation("User has been found. User is {@_user}", _user);
             _logger.LogDebug("Getting roles of the user");
             var roles = await _userManager.GetRolesAsync(user);
@@ -64,7 +89,7 @@ namespace Banking.Domain.Services
             _logger.LogInformation("User roles: {@roles}", roles);
 
             var mappedUser = _mapper.Map<ReadUserDTO>(user);
-            // mappedUser.Roles = roles;
+            mappedUser.UserRoles = roles;
             _logger.LogDebug("Returning read user dto : {@mappedUser}", mappedUser);
             return mappedUser;
         }
@@ -267,7 +292,7 @@ namespace Banking.Domain.Services
             _user = user;
             return await CreateToken(populateExp: false);
         }
-    
-        
+
+
     }
 }

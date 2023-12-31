@@ -14,5 +14,7 @@ namespace Banking.Domain.Contracts
         Task<ReadTokenDTO> RefreshToken(ReadTokenDTO tokenDto);
 
         Task<ReadUserDTO> GetUserByIdAsync(int id);
+
+        Task<ReadUserDTO> UpdateUserRoles(int id, UpdateUserRoles updateUserRoles);
     }
 }
