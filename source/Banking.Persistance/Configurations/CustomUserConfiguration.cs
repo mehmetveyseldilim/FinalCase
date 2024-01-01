@@ -12,9 +12,17 @@ namespace Banking.Persistance.Configurations
             // Each User can have many entries in the UserRole join table  
 
             builder.HasMany(e => e.UserRoles)  
-                .WithOne(e => e.User)  
-                .HasForeignKey(ur => ur.UserId)  
-                .IsRequired();
+                    .WithOne(e => e.User)  
+                    .HasForeignKey(ur => ur.UserId)  
+                    .IsRequired();
+
+
+            builder.HasMany(u => u.Accounts)
+                    .WithOne(a => a.User)
+                    .HasForeignKey(a => a.UserId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

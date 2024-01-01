@@ -11,6 +11,7 @@ namespace Banking.Persistance
     IdentityRoleClaim<int>, IdentityUserToken<int>> 
     {
         public const string SCHEMA_NAME = "BankingSchema";
+        public DbSet<Account> Accounts {get; set;}
 
 
 
@@ -27,6 +28,7 @@ namespace Banking.Persistance
 
             modelBuilder.ApplyConfiguration(new CustomUserConfiguration());
             modelBuilder.ApplyConfiguration(new CustomRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountConfiguration());
 
         }
     }

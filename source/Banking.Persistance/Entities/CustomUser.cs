@@ -15,6 +15,8 @@ namespace Banking.Persistance.Entities
         //. Navigation Properties
 
         public virtual required ICollection<CustomUserRole> UserRoles {get; set;}
+
+        public virtual required ICollection<Account> Accounts {get; set;}
     
     }
 }
