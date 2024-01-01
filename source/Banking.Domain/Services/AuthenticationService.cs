@@ -111,6 +111,7 @@ namespace Banking.Domain.Services
 
             if (result.Succeeded)
                 _logger.LogDebug("Creating user operation is successful.");
+                user.CreatedAt = DateTime.UtcNow;
                 await _userManager.AddToRolesAsync(user, createUserDTO.Roles);
 
             return result;
@@ -155,6 +156,11 @@ namespace Banking.Domain.Services
 
             _user = await _userManager.FindByNameAsync(userName);
 
+            if(_user == null) 
+            {
+                throw new UserNotFound(userName);
+            }
+
             _logger.LogDebug("The user is : {@_user}", _user);
 
             var result = _user != null && await _userManager.CheckPasswordAsync(_user, password);
@@ -165,6 +171,11 @@ namespace Banking.Domain.Services
             {
                 _logger.LogDebug($"{nameof(ValidateUser)}: Authentication failed. Wrong user name or password.");
             }
+            else if(result) 
+            {
+                _user.LastLogin = DateTime.UtcNow;
+            }
+
 
             return result;
         }
