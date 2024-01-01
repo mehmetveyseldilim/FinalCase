@@ -184,11 +184,21 @@ namespace Banking.Test.API.ValidationTests
 
 
         }
-
+        [Fact]
         public void ShouldValidate_Email_WhenEmailFormatIsValid()
         {
             var validEmail = "user@example.com";
-            var dtoWithValidEmail = new CreateUserDTO { Email = validEmail };
+            var dtoWithValidEmail = new CreateUserDTO 
+            { 
+                Email = validEmail,
+                UserName = "16813246382",
+                FirstName = "Test",
+                LastName = "Test",
+                PhoneNumber = "5538654218",
+                Password = "TestPassword12",
+                Roles = new string[] { "User"},
+            
+            };
 
             // Act
             var resultWithValidEmail = _validator.Validate(dtoWithValidEmail);
