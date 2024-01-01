@@ -101,18 +101,18 @@ namespace Banking.Domain.Services
 
             var user = _mapper.Map<CustomUser>(createUserDTO);
             _logger.LogDebug("Mapped user is: {@user}", user);
-            await CheckIfRoleExists(createUserDTO.Roles);
+            await CheckIfRoleExists(createUserDTO.Roles!);
 
             _logger.LogDebug("Roles do exist. Creating User");
 
-            var result = await _userManager.CreateAsync(user, createUserDTO.Password);
+            var result = await _userManager.CreateAsync(user, createUserDTO.Password!);
 
             _logger.LogDebug("Create User Result is: {@result}", result);
 
             if (result.Succeeded)
                 _logger.LogDebug("Creating user operation is successful.");
                 user.CreatedAt = DateTime.UtcNow;
-                await _userManager.AddToRolesAsync(user, createUserDTO.Roles);
+                await _userManager.AddToRolesAsync(user, createUserDTO.Roles!);
 
             return result;
         }
@@ -173,7 +173,7 @@ namespace Banking.Domain.Services
             }
             else if(result) 
             {
-                _user.LastLogin = DateTime.UtcNow;
+                _user!.LastLogin = DateTime.UtcNow;
             }
 
 
