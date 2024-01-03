@@ -23,6 +23,7 @@ namespace Banking.Persistance.Configurations
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
 
+
         }
     }
 }

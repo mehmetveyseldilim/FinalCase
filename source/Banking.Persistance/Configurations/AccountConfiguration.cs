@@ -20,11 +20,18 @@ namespace Banking.Persistance.Configurations
             builder.Property(a => a.DailyLimit).IsRequired();
             builder.Property(a => a.OperationLimit).IsRequired();
 
-
             builder.HasOne(a => a.User)
                     .WithMany(a => a.Accounts)
                     .HasForeignKey(a => a.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(a => a.Records)
+                    .WithOne(a => a.Account)
+                    .HasForeignKey(a => a.AccountId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            
+            builder.Property<uint>("Version").IsRowVersion();
 
         }
     }
