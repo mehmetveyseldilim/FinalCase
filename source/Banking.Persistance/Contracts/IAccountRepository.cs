@@ -6,6 +6,9 @@ namespace Banking.Persistance.Contracts
     {
         void CreateAccount(Account account);
 
-        Task<Account> GetAccountById(int accountId);
+        Task<Account?> GetAccountById(int accountId);
+
+        Task<Account?> GetAccountByUserId(int userId);
+
     }
 }

@@ -52,7 +52,7 @@ namespace Banking.Domain.Services
             if(user == null) 
             {
                 _logger.LogError("The user with id {@id} does not exist in the db. Throwing {@UserNotFound} exception}",id, nameof(UserNotFound));
-                throw new UserNotFound(id);
+                throw new UserNotFound(ExceptionErrorMessages.UserNotFoundForGivenUserId(id));
             }
 
             return user;
@@ -298,7 +298,7 @@ namespace Banking.Domain.Services
             var user = await _userManager.FindByNameAsync(principal.Identity!.Name!);
 
             if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-                throw new RefreshTokenBadRequest();
+                throw new RefreshTokenBadRequest(ExceptionErrorMessages.RefreshTokenBadRequestErrorMessage);
 
             _user = user;
             return await CreateToken(populateExp: false);

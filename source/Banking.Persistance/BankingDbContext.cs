@@ -8,10 +8,12 @@ namespace Banking.Persistance
 {
     public class BankingDbContext : IdentityDbContext<CustomUser, CustomRole, int,
     IdentityUserClaim<int>, CustomUserRole, IdentityUserLogin<int>,  
-    IdentityRoleClaim<int>, IdentityUserToken<int>> 
+    IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public const string SCHEMA_NAME = "BankingSchema";
         public DbSet<Account> Accounts {get; set;}
+
+        public DbSet<Record> Records {get; set;}
 
 
 
@@ -29,8 +31,11 @@ namespace Banking.Persistance
             modelBuilder.ApplyConfiguration(new CustomUserConfiguration());
             modelBuilder.ApplyConfiguration(new CustomRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new RecordConfiguration());
+
 
         }
+
     }
 }
 
