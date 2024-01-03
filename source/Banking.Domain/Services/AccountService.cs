@@ -199,6 +199,8 @@ namespace Banking.Domain.Services
                 _recordRepository.CreateRecord(record);
                 await _unitOfWork.SaveChangesAsync();
                 _logger.LogInformation("Record has been created and saved. Record: {@record}", record);
+                transaction.Commit();
+
             }
             catch (Exception ex)
             {
@@ -289,6 +291,8 @@ namespace Banking.Domain.Services
                 _recordRepository.CreateRecord(record);
                 await _unitOfWork.SaveChangesAsync();
                 _logger.LogInformation("Record has been created and saved. Record: {@record}", record);
+                transaction.Commit();
+
             }
             catch (Exception ex)
             {
