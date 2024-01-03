@@ -3,7 +3,9 @@ using Banking.API.Validations;
 using Banking.Domain.Contracts;
 using Banking.Domain.Services;
 using Banking.Persistance;
+using Banking.Persistance.Contracts;
 using Banking.Persistance.Entities;
+using Banking.Persistance.Repositories;
 using Banking.Shared;
 using Banking.Shared.DTOs.Request;
 using FluentValidation;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 
 namespace Banking.API.Extensions
 {
@@ -28,14 +31,13 @@ namespace Banking.API.Extensions
                 return services;
             }
 
-            services.AddDbContext<BankingDbContext>(options => 
+            services.AddDbContextFactory<BankingDbContext>(options =>
             {
-                options.UseNpgsql(connectionString, b => 
+                options.UseNpgsql(connectionString, b =>
                     b.MigrationsAssembly("Banking.API")
-                    .MigrationsHistoryTable("__EFMigrationsHistory", schema: BankingDbContext.SCHEMA_NAME));
-
+                        .MigrationsHistoryTable("__EFMigrationsHistory", schema: BankingDbContext.SCHEMA_NAME));
             });
-
+            
             return services;
         }
 
@@ -107,6 +109,7 @@ namespace Banking.API.Extensions
         {
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTOValidator>();
             services.AddScoped<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
+            services.AddScoped<IValidator<CreateAccountDTO>, CreateAccountDTOValidator>();
 
 
             return services;
@@ -114,7 +117,8 @@ namespace Banking.API.Extensions
 
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services) 
         {
-            // services.AddScoped<ITypeRepository, TypeRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IRecordRepository, RecordRepository>();
 
             return services;
 
@@ -122,10 +126,14 @@ namespace Banking.API.Extensions
 
         public static IServiceCollection ConfigureServices(this IServiceCollection services) 
         {
+            services.AddScoped<IErrorRecordHandler, ErrorRecordHandler>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
 
         }
+
     }
 }
