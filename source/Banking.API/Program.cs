@@ -14,6 +14,8 @@ namespace Banking
             // Add services to the container.
 
             builder.Host.ConfigureSerilog(builder.Configuration);
+            System.Console.WriteLine(DateTime.UtcNow);
+            builder.Services.ConfigureQuartzJobs();
             builder.Services.ConfigureValidations();
             builder.Services.AddScoped<FluentValidationFilter>();
             builder.Services.AddPostgresDbContext(builder.Configuration);

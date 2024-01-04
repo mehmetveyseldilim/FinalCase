@@ -1,5 +1,6 @@
 using System.Text;
 using Banking.API.Validations;
+using Banking.Domain.BackgroundServices;
 using Banking.Domain.Contracts;
 using Banking.Domain.Services;
 using Banking.Persistance;
@@ -13,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
+
 
 
 namespace Banking.API.Extensions
@@ -37,7 +40,7 @@ namespace Banking.API.Extensions
                     b.MigrationsAssembly("Banking.API")
                         .MigrationsHistoryTable("__EFMigrationsHistory", schema: BankingDbContext.SCHEMA_NAME));
             });
-            
+
             return services;
         }
 
@@ -130,6 +133,37 @@ namespace Banking.API.Extensions
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+
+        }
+
+        public static IServiceCollection ConfigureQuartzJobs(this IServiceCollection services)
+        {
+            // Add Quartz services
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                var dailySpendJobKey = JobKey.Create(nameof(DailySpendResetService));
+                var payBillsJobKey = JobKey.Create(nameof(PayBillsBackgroundService));
+
+                q.AddJob<DailySpendResetService>(dailySpendJobKey)
+                    .AddTrigger(trigger => 
+                                    trigger.ForJob(dailySpendJobKey)
+                                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(0, 0)));
+
+                 q.AddJob<PayBillsBackgroundService>(payBillsJobKey)
+                    .AddTrigger(trigger => 
+                                    trigger.ForJob(payBillsJobKey)
+                                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(0, 0)));                             
+            });
+
+            services.AddQuartzHostedService(options => 
+            {
+                options.WaitForJobsToComplete = true;
+            });
+
 
             return services;
 
