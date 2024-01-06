@@ -24,6 +24,8 @@ namespace Banking.Domain.Services
 
         private readonly IErrorRecordHandler _errorRecordHandler;
 
+        private readonly IBillRepository _billRepository;
+
         private readonly string _serviceName = nameof(AccountService);
 
         public AccountService(IAccountRepository accountRepository,
@@ -31,7 +33,8 @@ namespace Banking.Domain.Services
         IMapper mapper,
         IUnitOfWork unitOfWork,
         IRecordRepository recordRepository,
-        IErrorRecordHandler errorRecordHandler)
+        IErrorRecordHandler errorRecordHandler,
+        IBillRepository billRepository)
         {
             _accountRepository = accountRepository;
             _logger = logger;
@@ -39,6 +42,7 @@ namespace Banking.Domain.Services
             _unitOfWork = unitOfWork;
             _recordRepository = recordRepository;
             _errorRecordHandler = errorRecordHandler;
+            _billRepository = billRepository;
         }
 
         public async Task<ReadAccountDTO> CreateAccountAsync(int userId, CreateAccountDTO createAccountDTO)
@@ -68,7 +72,6 @@ namespace Banking.Domain.Services
                     _recordRepository.CreateRecord(record);
                     await _unitOfWork.SaveChangesAsync();
                     _logger.LogInformation("Newly created record for opening new account: {@record}", record);
-
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -77,8 +80,6 @@ namespace Banking.Domain.Services
                     _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
 
                     transaction.Rollback();
-                    transaction.Dispose();
-                    _unitOfWork.ClearChangeTracker();
                     _unitOfWork.Dispose();
 
                     Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, openingBalance, operationType, false, ex.Message);
@@ -94,6 +95,8 @@ namespace Banking.Domain.Services
             _logger.LogDebug("Returning mapped account: {@mappdAccount}", mappedAccount);
             return mappedAccount;
         }
+
+        
 
         public async Task<ReadAccountDTO> DepositAsync(int userId, CreateDepositDTO createDepositDTO)
         {
@@ -129,7 +132,6 @@ namespace Banking.Domain.Services
                 _logger.LogError("An error has been occured in account service {@methodName} method!. Rolling back transaction", methodName);
                 _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
                 transaction.Rollback();
-                transaction.Dispose();
                 _unitOfWork.ClearChangeTracker();
                 _unitOfWork.Dispose();
                 
@@ -193,6 +195,7 @@ namespace Banking.Domain.Services
 
                 _logger.LogDebug("Account balance old value: {@accountBalance}", account.Balance);
                 account.Balance -= amount;
+                account.DailySpend += amount;
                 _logger.LogDebug("Account balance new value: {@accountBalance}", account.Balance);
                 _logger.LogDebug("Creating record");
                 Record record = CreateSuccessfullOperationRecordEntity(userId, amount, operationType, account.Id);
@@ -207,8 +210,6 @@ namespace Banking.Domain.Services
                 _logger.LogError("An error has been occured in account service {@methodName} method!. Rolling back transaction", methodName);
                 _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
                 transaction.Rollback();
-                transaction.Dispose();
-                _unitOfWork.ClearChangeTracker();
                 _unitOfWork.Dispose();
 
                 bool isPending = ex is OperationLimitExceededException;
@@ -280,6 +281,7 @@ namespace Banking.Domain.Services
 
                 _logger.LogDebug("Sender account balance old value: {@senderAccountBalance}", senderAccount.Balance);
                 senderAccount.Balance -= amount;
+                senderAccount.DailySpend += amount;
                 _logger.LogDebug("Sender account balance new value: {@senderAccountBalance}", senderAccount.Balance);
 
                 _logger.LogDebug("Receiver account balance old value: {@receiverAccountBalance}", receiverAccount.Balance);
@@ -299,7 +301,6 @@ namespace Banking.Domain.Services
                 _logger.LogError("An error has been occured in account service {@methodName} method!. Rolling back transaction", methodName);
                 _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
                 transaction.Rollback();
-                transaction.Dispose();
                 _unitOfWork.ClearChangeTracker();
                 _unitOfWork.Dispose();
 
@@ -323,9 +324,57 @@ namespace Banking.Domain.Services
 
         }
 
-        public Task<ReadAccountDTO> AddAutomaticBillPaymentAsync(int userId, string billNumber)
+        public async Task<ReadAccountDTO> AddAutomaticBillPaymentAsync(int userId, CreateBillDTO createBillDTO)
         {
-            throw new NotImplementedException();
+            OperationType operationType = OperationType.AutomaticPaymentSetup;
+            string methodName = nameof(AddAutomaticBillPaymentAsync);
+
+            _logger.LogDebug("Inside {@nameOfService}_{@methodName} Method", _serviceName, methodName);
+            _logger.LogDebug("User id parameter is {@userId}", userId);
+            _logger.LogDebug("Create bill DTO parameter is {@createBillDTO}", createBillDTO);
+
+            Account account = await GetAccountByUserIdOrThrowExceptionAsync(userId);
+
+            
+            using var transaction = _unitOfWork.BeginTransaction(); 
+            {
+                _logger.LogDebug("Transaction has been started.");
+
+                try
+                {
+                    Bill bill = _mapper.Map<Bill>(createBillDTO);
+                    _billRepository.CreatBill(bill);
+                    await _unitOfWork.SaveChangesAsync();
+                    _logger.LogInformation("Newly created bill: {@bill}", bill);
+
+                    Record record = CreateSuccessfullOperationRecordEntity(userId, 0, operationType, account.Id);
+                    _recordRepository.CreateRecord(record);
+                    await _unitOfWork.SaveChangesAsync();
+                    _logger.LogInformation("Newly created record for opening new account: {@record}", record);
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("An error has been occured in {@nameOfService} {@methodName} method!. Rolling back transaction.", _serviceName, methodName);
+                    _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
+
+                    transaction.Rollback();
+                    _unitOfWork.ClearChangeTracker();
+                    _unitOfWork.Dispose();
+
+                    Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, 0, operationType, false, ex.Message);
+
+                    _logger.LogError("Record has been created for unsuccessfull {@operationName} operation. Record: {@record}", methodName, errorRecord);
+                    _errorRecordHandler.AddErrorRecord(errorRecord);
+                    throw;
+                }
+            }
+
+            var mappedAccount = _mapper.Map<ReadAccountDTO>(account);
+
+            _logger.LogDebug("Returning mapped account: {@mappdAccount}", mappedAccount);
+            return mappedAccount;
         }
 
         public async Task<ReadAccountDTO> GetAccountByIdAsync(int accountId)
@@ -353,7 +402,7 @@ namespace Banking.Domain.Services
             }
 
             _logger.LogInformation("Account with id {@id} has been found!", accountId);
-            _logger.LogInformation("Account: {@account}", account);
+            // _logger.LogInformation("Account: {@account}", account);
 
             return account;
 
@@ -374,7 +423,7 @@ namespace Banking.Domain.Services
             }
 
             _logger.LogInformation("Account with user id {@userId} has been found!", userId);
-            _logger.LogInformation("Account: {@account}", account);
+            // _logger.LogInformation("Account: {@account}", account);
 
             return account;
         }
@@ -432,5 +481,79 @@ namespace Banking.Domain.Services
             return record;
         }
 
+        private Bill CreateBillEntity(int amount, DateTime lastPayTime, int accountId)
+        {
+            Bill bill = new Bill()
+            {
+                Amount = amount,
+                LastPayTime = lastPayTime,
+                AccountId = accountId,
+                IsActive = true
+            };
+
+            return bill;
+        }
+
+        // For Data Seeding
+        public async Task CreateAccountsAsync(IEnumerable<CreateAccountDTO> createAccountsDTOs)
+        {
+            
+            OperationType operationType = OperationType.CreateAccount;
+            string methodName = nameof(CreateAccountAsync);
+
+            _logger.LogDebug("Inside {@nameOfService}_{@methodName} Method", _serviceName, methodName);
+
+            foreach (CreateAccountDTO dtoAccount in createAccountsDTOs)
+            {
+                int openingBalance = dtoAccount.Balance;
+                int userId = dtoAccount.UserId;
+
+                _logger.LogDebug("User id parameter is {@userId} and account opening balance is: {@balance}", userId, openingBalance);
+                _logger.LogDebug("Creating an account for user id {@userId}", userId);
+                Account account = CreateNewAccountEntity(userId, openingBalance);
+                _accountRepository.CreateAccount(account);
+                await _unitOfWork.SaveChangesAsync();
+
+                Record record = CreateSuccessfullOperationRecordEntity(userId, openingBalance, operationType, account.Id);
+                _recordRepository.CreateRecord(record);
+                await _unitOfWork.SaveChangesAsync();
+
+            }
+            
+            _logger.LogDebug("Seeded Accounts Count: {@count}", createAccountsDTOs.Count());
+        }
+
+        public async Task CreateBillsAsync(IEnumerable<CreateBillDTO> createBillDTOs)
+        {
+            OperationType operationType = OperationType.AutomaticPaymentSetup;
+            string methodName = nameof(CreateBillsAsync);
+
+            _logger.LogDebug("Inside {@nameOfService}_{@methodName} Method", _serviceName, methodName);
+
+
+            foreach (CreateBillDTO createBillDTO in createBillDTOs)
+            {
+                Account account = await GetAccountByIdOrThrowExceptionAsync(createBillDTO.AccountId);
+                Bill bill = CreateBillEntity(createBillDTO.Amount, createBillDTO.LastPayTime, createBillDTO.AccountId);
+                _billRepository.CreatBill(bill);
+                await _unitOfWork.SaveChangesAsync();
+
+                Record record = CreateSuccessfullOperationRecordEntity(account.UserId, createBillDTO.Amount, operationType, account.Id);
+                _recordRepository.CreateRecord(record);
+                await _unitOfWork.SaveChangesAsync();
+
+            }
+            
+            _logger.LogDebug("Seeded Bills Count: {@count}", createBillDTOs.Count());
+        }
+
+        public async Task<IEnumerable<ReadRecordDTO>> GetUserTransactionHistoryAsync(int userId)
+        {
+            IEnumerable<Record> records = await _recordRepository.GetRecordsForUserAsync(userId);
+
+            IEnumerable<ReadRecordDTO> mappedRecords = _mapper.Map<IEnumerable<ReadRecordDTO>>(records);
+
+            return mappedRecords;
+        }
     }
 }
