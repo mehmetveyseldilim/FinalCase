@@ -26,12 +26,16 @@ namespace Banking.API.Extensions
                             var authenticationService = scope.ServiceProvider
                                 .GetRequiredService<IAuthenticationService>();
 
+                            var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
+
                             context.SeedDatabase<CustomRole>("CustomRoles.json");
                             await context.SaveChangesAsync();
 
                             await context.SeedUser(authenticationService, "CustomUsers.json");
-
                             await context.SaveChangesAsync();
+                            await context.SeedAccount(accountService, "Accounts.json");
+                            await context.SaveChangesAsync();
+                            await context.SeedBill(accountService);
                         }
 
                     }

@@ -58,9 +58,37 @@ namespace Banking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Accounts", "BankingSchema");
+                });
+
+            modelBuilder.Entity("Banking.Persistance.Entities.Bill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastPayTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Bills", "BankingSchema");
                 });
 
             modelBuilder.Entity("Banking.Persistance.Entities.CustomRole", b =>
@@ -328,12 +356,23 @@ namespace Banking.API.Migrations
             modelBuilder.Entity("Banking.Persistance.Entities.Account", b =>
                 {
                     b.HasOne("Banking.Persistance.Entities.CustomUser", "User")
-                        .WithMany("Accounts")
-                        .HasForeignKey("UserId")
+                        .WithOne("Account")
+                        .HasForeignKey("Banking.Persistance.Entities.Account", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Banking.Persistance.Entities.Bill", b =>
+                {
+                    b.HasOne("Banking.Persistance.Entities.Account", "Account")
+                        .WithMany("Bills")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Banking.Persistance.Entities.CustomUserRole", b =>
@@ -403,6 +442,8 @@ namespace Banking.API.Migrations
 
             modelBuilder.Entity("Banking.Persistance.Entities.Account", b =>
                 {
+                    b.Navigation("Bills");
+
                     b.Navigation("Records");
                 });
 
@@ -413,7 +454,7 @@ namespace Banking.API.Migrations
 
             modelBuilder.Entity("Banking.Persistance.Entities.CustomUser", b =>
                 {
-                    b.Navigation("Accounts");
+                    b.Navigation("Account");
 
                     b.Navigation("UserRoles");
                 });
