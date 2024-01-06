@@ -33,7 +33,7 @@ namespace Banking.API.Controllers
 
             ReadAccountDTO dto = await _accountService.CreateAccountAsync(userId, createAccountDTO);
 
-            return dto;
+            return Ok(dto);
 
         }
 
@@ -49,7 +49,7 @@ namespace Banking.API.Controllers
 
             ReadAccountDTO dto = await _accountService.DepositAsync(userId, createDepositDTO);
 
-            return dto;
+            return Ok(dto);
 
         }
 
@@ -65,7 +65,7 @@ namespace Banking.API.Controllers
 
             ReadAccountDTO dto = await _accountService.WithdrawAsync(userId, createWithdrawDTO);
 
-            return dto;
+            return Ok(dto);
 
         }
 
@@ -81,9 +81,26 @@ namespace Banking.API.Controllers
 
             Tuple<ReadAccountDTO, ReadAccountDTO> result = await _accountService.TransferMoneyAsync(userId, createTransferMoneyDTO);
 
-            return (result.Item1, result.Item2);
+            return Ok(result);
 
         }
+
+        [HttpGet("transaction-history")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<IEnumerable<ReadRecordDTO>>> GetTransactionHistoryForUser()
+        {
+            _logger.LogDebug("{@controllerName} -- HTTP GET -- {@methodName}", nameof(AccountController), nameof(Transfer));
+
+            int userId = GetUserIdFromToken();
+
+            _logger.LogDebug("User id extracted from access token is {@userId}", userId);
+
+            IEnumerable<ReadRecordDTO> result = await _accountService.GetUserTransactionHistoryAsync(userId);
+
+            return Ok(result);
+
+        }
+
 
     }
 }
