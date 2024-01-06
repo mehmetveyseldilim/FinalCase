@@ -34,6 +34,14 @@
     <None Update="Data\CustomUsers.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
+    <None Update="Data\Accounts.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Update="Data\Accounts.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     
     <!-- <None Update="Data\CustomUserRoles.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

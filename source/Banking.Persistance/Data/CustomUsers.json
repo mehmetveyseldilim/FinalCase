@@ -6,8 +6,8 @@
         "UserName" : "57416725928",
         "Email" : "testadminuser1@gmail.com",
         "PhoneNumber" : "+905012312966",
-        "Password" : "TestAdminUser1Password-24",
-        "Roles" : ["Administrator", "User"]
+        "Password" : "TestAdminUser1Password24",
+        "Roles" : ["Administrator"]
 
     },
     {
@@ -17,8 +17,8 @@
         "UserName" : "27295417344",
         "Email" : "testmanager@gmail.com",
         "PhoneNumber" : "+905037712936",
-        "Password" : "TestManagerPassword-12",
-        "Roles" : ["Support", "User"]
+        "Password" : "TestManagerPassword12",
+        "Roles" : ["Support"]
 
     },
     {
@@ -28,7 +28,7 @@
         "UserName" : "95745395412",
         "Email" : "testuser1@gmail.com",
         "PhoneNumber" : "+905012312966",
-        "Password" : "TestUser1Password-11",
+        "Password" : "TestUser1Password11",
         "Roles" : ["User"]
 
     },
@@ -39,7 +39,7 @@
         "UserName" : "61942419602",
         "Email" : "testuser2@gmail.com",
         "PhoneNumber" : "+905072317912",
-        "Password" : "TestUser2Password-13",
+        "Password" : "TestUser2Password13",
         "Roles" : ["User"]
 
     },
@@ -50,7 +50,97 @@
         "UserName" : "14173994738",
         "Email" : "testuser3@gmail.com",
         "PhoneNumber" : "+905232317915",
-        "Password" : "TestUser3Password-15",
+        "Password" : "TestUser3Password15",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 6,
+        "FirstName" : "IntegrationTestFirstName1",
+        "LastName" : "IntegrationTestLastName1",
+        "UserName" : "14253994730",
+        "Email" : "IntegrationTestEmail1@gmail.com",
+        "PhoneNumber" : "+905552317925",
+        "Password" : "TestUser3Password19",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 7,
+        "FirstName" : "IntegrationTestFirstName2",
+        "LastName" : "IntegrationTestLastName2",
+        "UserName" : "16173294752",
+        "Email" : "IntegrationTestEmail2@gmail.com",
+        "PhoneNumber" : "+905182357935",
+        "Password" : "TestUser3Password27",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 8,
+        "FirstName" : "IntegrationTestFirstName5",
+        "LastName" : "IntegrationTestLastName5",
+        "UserName" : "64058491142",
+        "Email" : "IntegrationTestEmai91@gmail.com",
+        "PhoneNumber" : "+901582357925",
+        "Password" : "TestUser3Password91142",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 9,
+        "FirstName" : "IntegrationTestFirstName38346001948",
+        "LastName" : "IntegrationTestLastName38346001948",
+        "UserName" : "38346001948",
+        "Email" : "IntegrationTest38346001948@gmail.com",
+        "PhoneNumber" : "+901782367921",
+        "Password" : "TestUser3Password38346001948",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 10,
+        "FirstName" : "IntegrationTestFirstName79529879916",
+        "LastName" : "IntegrationTestLastName79529879916",
+        "UserName" : "79529879916",
+        "Email" : "IntegrationTest79529879916@gmail.com",
+        "PhoneNumber" : "+901282317951",
+        "Password" : "TestUser3Password79529879916",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 11,
+        "FirstName" : "IntegrationTestFirstName97182022180",
+        "LastName" : "IntegrationTestLastName97182022180",
+        "UserName" : "97182022180",
+        "Email" : "IntegrationTest97182022180@gmail.com",
+        "PhoneNumber" : "+901782367920",
+        "Password" : "TestUser3Password97182022180",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 12,
+        "FirstName" : "IntegrationTestFirstName83585762228",
+        "LastName" : "IntegrationTestLastName83585762228",
+        "UserName" : "83585762228",
+        "Email" : "IntegrationTest83585762228@gmail.com",
+        "PhoneNumber" : "+901755367911",
+        "Password" : "TestUser3Password83585762228",
+        "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 13,
+        "FirstName" : "IntegrationTestFirstName86899296816",
+        "LastName" : "IntegrationTestLastName86899296816",
+        "UserName" : "86899296816",
+        "Email" : "IntegrationTest86899296816@gmail.com",
+        "PhoneNumber" : "+301182367915",
+        "Password" : "TestUser3Password86899296816",
         "Roles" : ["User"]
     }
+
+
 ]

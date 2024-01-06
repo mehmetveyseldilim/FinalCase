@@ -20,5 +20,7 @@ namespace Banking.Persistance.Entities
         public int OperationLimit {get; set;}
 
         public ICollection<Record>? Records {get; set;}
+
+        public ICollection<Bill>? Bills {get; set;}
     }
 }

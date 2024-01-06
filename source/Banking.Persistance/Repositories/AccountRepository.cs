@@ -1,6 +1,5 @@
 using Banking.Persistance.Contracts;
 using Banking.Persistance.Entities;
-using Banking.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -27,9 +26,9 @@ namespace Banking.Persistance.Repositories
 
         public async Task<Account?> GetAccountById(int accountId)
         {
-            var account = await _context.Accounts.FindAsync(accountId);
+            var account = await _context.Accounts.Where(a => a.Id == accountId).SingleOrDefaultAsync();
 
-
+            
             return account;
         }
 

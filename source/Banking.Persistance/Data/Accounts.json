@@ -1,0 +1,45 @@
+[
+    {
+        "UserId" : 3,
+        "Balance" : 250
+    },
+
+    {
+        "UserId" : 4,
+        "Balance" : 15000
+    },
+
+    {
+        "UserId" : 5,
+        "Balance" : 450
+    },
+
+    {
+        "UserId" : 8,
+        "Balance" : 1500
+    },
+    {
+        "UserId" : 9,
+        "Balance" : 1000
+    },
+
+    {
+        "UserId" : 10,
+        "Balance" : 400
+    },
+
+    {
+        "UserId" :  11,
+        "Balance" : 1000
+    },
+
+    {
+        "UserId" :  12,
+        "Balance" : 1000
+    },
+
+    {
+        "UserId" :  13,
+        "Balance" : 1000
+    }
+]

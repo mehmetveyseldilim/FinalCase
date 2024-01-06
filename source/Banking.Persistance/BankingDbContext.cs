@@ -15,6 +15,7 @@ namespace Banking.Persistance
 
         public DbSet<Record> Records {get; set;}
 
+        public DbSet<Bill> Bills {get; set;}
 
 
         public BankingDbContext(DbContextOptions<BankingDbContext> dbContextOptions) : base(dbContextOptions)
@@ -32,7 +33,7 @@ namespace Banking.Persistance
             modelBuilder.ApplyConfiguration(new CustomRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new RecordConfiguration());
-
+            modelBuilder.ApplyConfiguration(new BillConfiguration());
 
         }
 

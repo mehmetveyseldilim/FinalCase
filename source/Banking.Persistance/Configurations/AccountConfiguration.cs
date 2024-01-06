@@ -21,11 +21,16 @@ namespace Banking.Persistance.Configurations
             builder.Property(a => a.OperationLimit).IsRequired();
 
             builder.HasOne(a => a.User)
-                    .WithMany(a => a.Accounts)
-                    .HasForeignKey(a => a.UserId)
+                    .WithOne(a => a.Account)
+                    .HasForeignKey<Account>(a => a.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(a => a.Records)
+                    .WithOne(a => a.Account)
+                    .HasForeignKey(a => a.AccountId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(a => a.Bills)
                     .WithOne(a => a.Account)
                     .HasForeignKey(a => a.AccountId)
                     .OnDelete(DeleteBehavior.Restrict);

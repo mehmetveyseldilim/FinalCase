@@ -2,6 +2,7 @@
 
 using Banking.Persistance.Contracts;
 using Banking.Persistance.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Banking.Persistance.Repositories
@@ -20,9 +21,14 @@ namespace Banking.Persistance.Repositories
 
         public void CreateRecord(Record record)
         {
-            _logger.LogDebug("In {@className} {@methoName} method", nameof(RecordRepository), nameof(CreateRecord));
             _context.Records.Add(record);
-            _logger.LogDebug("Added record: {@record}", record);
+        }
+
+        public async Task<IEnumerable<Record>> GetRecordsForUserAsync(int userId)
+        {
+            IEnumerable<Record> records = await _context.Records.Where(record => record.UserId == userId).ToListAsync();
+
+            return records;
         }
     }
 }
