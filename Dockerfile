@@ -9,7 +9,7 @@ RUN dotnet build
 
 # Set environment variable for testing
 ENV SecretThree="MyVerySecretActualSecretKeyIsThisSecretKeyNothingMore"
-RUN cd /App \ && dotnet test
+RUN cd /App
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 

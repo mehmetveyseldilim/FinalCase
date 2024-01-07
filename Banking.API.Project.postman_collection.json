@@ -1,0 +1,1244 @@
+{
+	"info": {
+		"_postman_id": "7a2089a6-061f-4bf9-a283-251009ca3512",
+		"name": "Banking.API.Project",
+		"description": "This project documentation has endpoints and request parameters ready to go to show how the API works.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24093911"
+	},
+	"item": [
+		{
+			"name": "User Operations",
+			"item": [
+				{
+					"name": "Authentication User",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Test\",\r\n  \"userName\": \"16813246382\",\r\n  \"password\": \"testPassword64128\",\r\n  \"email\": \"veyselusser@gmail.com\",\r\n  \"phonenumber\" : \"5538654218\",\r\n  \"roles\": [\r\n    \"user\"\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "This is sign up. It asks for spesific parameters such as username and password. If validated, a new user is created and returns 201.\n\nElse, returns bad request."
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"TestAdmin\",\r\n  \"lastName\": \"TestAdminLastName\",\r\n  \"userName\": \"16717532114\",\r\n  \"password\": \"testPassword64\",\r\n  \"email\": \"veyseladmin@gmaisl.com\",\r\n  \"phonenumber\" : \"5537624112\",\r\n  \"roles\": [\r\n    \"Administrator\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "This is sign up for admin role."
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication with No Roles",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"TestUserFirstName\",\r\n  \"lastName\": \"TestUserLastName\",\r\n  \"userName\": \"TestUserName\",\r\n  \"password\": \"TestPassword12\",\r\n  \"email\": \"veyseldlm@gmail.com\",\r\n  \"phoneNumber\": \"5557126936\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Returns Bad Request because role section is required"
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login Correct Credentials User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"16813246382\",\r\n  \"password\": \"testPassword64128\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Returns Access Token and Refresh Token for correct username and password."
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login Correct Credentials Admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"16717532114\",\r\n  \"password\": \"testPassword64\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "with correct credentials (if user exists and credentials are true)\n\n  \nit returns access token and refresh token\n\naccess token can be used for role based authorization.\n\nJust sent it everytime with the request"
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login Correct Credentials Support",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"27295417344\",\r\n  \"password\": \"TestManagerPassword12\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login Correct Credentials User with Bills",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"61942419602\",\r\n  \"password\": \"TestUser2Password13\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login Correct Credentials User with No Account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"45395407782\",\r\n  \"password\": \"TestUser3Password45395407782\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication/Login WRONG Credentials",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"16717532114\",\r\n  \"password\": \"TestPassword1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Returns \"wrong username or password\" as credentials are wrong."
+					},
+					"response": []
+				},
+				{
+					"name": "Get New Access and Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjE1NjkwLCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.ph_-P-T4an3ys-HzwAR6291uPcfWD_KJgVCZIKkFzvc\",\r\n    \"refreshToken\": \"gOu3p/OVbkMG1Z2ex+EcFl4zoEnBRUYS4nwWzO0vge0=\"\r\n\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/token/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"token",
+								"refresh"
+							]
+						},
+						"description": "Get new Access token and Refresh Token\n\nMust re login if refresh token is expired."
+					},
+					"response": []
+				},
+				{
+					"name": "GetByIdOnlyAdmin AdminToken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY3MTc1MzIxMTQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTcwNDYyMjIwNSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.UWspRQoiXFnpfU_BlG5KE7exRK6QvFu4P23L-Y-tODI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/admins/getuser/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"admins",
+								"getuser",
+								"5"
+							]
+						},
+						"description": "Provide admin access token. Otherwise, returns 403 forbidden.  \n  \nThis operation is admin role only!."
+					},
+					"response": []
+				},
+				{
+					"name": "GetByIdOnlyAdmin UserToken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYyMjIyNCwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.I93jjXp-F-d0ydAd4woSOvNBtVfFs58Pqa6kN0zg0hU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/admins/getuser/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"admins",
+								"getuser",
+								"1"
+							]
+						},
+						"description": "Provide user access token. Returns 403 forbidden."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role Add Support",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY3MTc1MzIxMTQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTcwNDYyMjIwNSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.UWspRQoiXFnpfU_BlG5KE7exRK6QvFu4P23L-Y-tODI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserRoles\" : [ \"Support\", \"User\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/admins/updaterole/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"admins",
+								"updaterole",
+								"5"
+							]
+						},
+						"description": "Admins can update other's roles."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role Invalid Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY3MTc1MzIxMTQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTcwNDYyNjIwNCwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.iBRBF8lykSfNj6NwiuBCZFqQyeANTbCT6CiJhexdQuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserRoles\" : [ \"Support\", \"User\", \"UnknownRole\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/admins/updaterole/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"admins",
+								"updaterole",
+								"5"
+							]
+						},
+						"description": "An invalid role returns a bad request."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role Invalid Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYyNjMyOSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.xtop6HXS0PK4Pjj6KETbIbOm_wcqxeV14OX7ryLI_rU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserRoles\" : [ \"Support\", \"User\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/admins/updaterole/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"admins",
+								"updaterole",
+								"5"
+							]
+						},
+						"description": "Only admins can use this endpoint. Others will get 403 forbidden."
+					},
+					"response": []
+				}
+			],
+			"description": "This folder contains operations related to authentication and authorization."
+		},
+		{
+			"name": "AccountOperations",
+			"item": [
+				{
+					"name": "Create Account Invalid Balance < 100",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYzMTYwMywiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.u6TFPcZGoFvhFhOjHTniEjlHxe4sWsevt1pvu7o_e9o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Balance\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/create-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"create-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account No Token UnAuthorized 401",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Balance\" : 150\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/create-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"create-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account Non-User Role Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY3MTc1MzIxMTQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE2IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTcwNDYzMTY1MSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.AGp1T-BLinVoLiuFGEueu6AVVzp8sGUixR4GYW_KFhU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Balance\" : 150\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/create-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"create-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account Valid Token & Balance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDY1MTI5MSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.PJidMpyFHpKBOu9vCdsb2E6IvEBOUfxRwWZuQaRC9EY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Balance\" : 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/create-account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"create-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By User Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNjE5NDI0MTk2MDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjUzMjIxLCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.0oKevXnLuYKn0UqT0XvCyTNOVUZf83SKeZ3XREjswh8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/account-informations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"account-informations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account with Bills By User Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNjE5NDI0MTk2MDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjMwODc2LCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.ylsBb69EPFXsFJw0C6sGZ2AQ2bztZqgJEjbzf6Cuyfc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/account-informations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"account-informations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By User Id AccountNotFound",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNDUzOTU0MDc3ODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYzMTQwNywiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.Ja2o1N9nCe0fEc6fchoAnlaL-ZYdhrGxnJh7ALDs6KA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/account-informations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"account-informations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Deposit DTO Invalid Amount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNjE5NDI0MTk2MDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjMyMTAyLCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.iUPhU-fxN5LPUcXMUsBk24of2oFWs1a1qTGPq_scRyk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/deposit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Deposit DTO No Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNDUzOTU0MDc3ODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYzMjIwMiwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.2n8ZIWyvMC2skSmGvmUFFBO5fA04VwHqcvk8eSh3RNY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/deposit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Deposit DTO Valid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDYzMjkzOSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.WIWLQXKx3wJgKHtsVvW3fySDK1Szt45Ci7I06eFiUs4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/deposit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Withdraw Valid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDY0NDQwMiwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.DakAXbFPJn9V4PMLBuGr9iuYTxBDkrkdNSPA1dMf5zQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Withdraw Insufficient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDY0NDQwMiwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.DakAXbFPJn9V4PMLBuGr9iuYTxBDkrkdNSPA1dMf5zQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 240\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Withdraw OperationLimit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNjE5NDI0MTk2MDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjQ0NTUzLCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.NK5NGM2PWnKmNER8CP4mDtYNu4PtVWpJUHS4WwZOwT0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 260\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Withdraw DailySpend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDY0NzY4NiwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.zCLNCQwaQ_obbO24ciksXpkD5KEAC1YCG6ndadDYNIk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Transfer DTO Valid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNjE5NDI0MTk2MDIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzA0NjQ3OTE1LCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.RxvGW-8IqS9nTDDcA0x-NwJFe_6Ruz-SS3M5CU4w2TE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\" : 260,\r\n    \"ReceiverAccountID\" : 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/transfer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bill DTO Valid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMTY4MTMyNDYzODIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTcwNDY1MTI5MSwiaXNzIjoiQmFua2luZyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE1NCJ9.PJidMpyFHpKBOu9vCdsb2E6IvEBOUfxRwWZuQaRC9EY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\": 25,\r\n    \"LastPayTime\": \"2024-01-06T22:31:18Z\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5154/api/accounts/bill-payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"accounts",
+								"bill-payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Support Operations",
+			"item": [
+				{
+					"name": "Get All Records",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMjcyOTU0MTczNDQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTdXBwb3J0IiwiZXhwIjoxNzA0NjQ4NjQ1LCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.NBphUrFyl-uesZLreaXIpvE3Chay185D87NbwyEFspU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/support/records?PageNumber=1&PageSize=50&IsPending=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"support",
+								"records"
+							],
+							"query": [
+								{
+									"key": "PageNumber",
+									"value": "1"
+								},
+								{
+									"key": "PageSize",
+									"value": "50"
+								},
+								{
+									"key": "IsPending",
+									"value": "true"
+								},
+								{
+									"key": "UserId",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "OrderBy",
+									"value": "account.Id desc, Id desc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Execute Pending Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMjcyOTU0MTczNDQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTdXBwb3J0IiwiZXhwIjoxNzA0NjQ4OTU5LCJpc3MiOiJCYW5raW5nIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTU0In0.Cr1lii4n3-nfwLgDfrwPGMKl54gATE1TscrolmbO1s0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5154/api/support/pending-withdrawal/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5154",
+							"path": [
+								"api",
+								"support",
+								"pending-withdrawal",
+								"14"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

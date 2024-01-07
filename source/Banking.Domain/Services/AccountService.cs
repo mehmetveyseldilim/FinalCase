@@ -61,36 +61,36 @@ namespace Banking.Domain.Services
             Account account = CreateNewAccountEntity(userId, openingBalance);
             
             using var transaction = _unitOfWork.BeginTransaction(); 
+            
+            _logger.LogDebug("Transaction has been started.");
+
+            try
             {
-                _logger.LogDebug("Transaction has been started.");
+                _accountRepository.CreateAccount(account);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Newly created account: {@account}", account);
 
-                try
-                {
-                    _accountRepository.CreateAccount(account);
-                    await _unitOfWork.SaveChangesAsync();
-                    _logger.LogInformation("Newly created account: {@account}", account);
-
-                    Record record = CreateSuccessfullOperationRecordEntity(userId, openingBalance, operationType, account.Id);
-                    _recordRepository.CreateRecord(record);
-                    await _unitOfWork.SaveChangesAsync();
-                    _logger.LogInformation("Newly created record for opening new account: {@record}", record);
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("An error has been occured in {@nameOfService} {@methodName} method!. Rolling back transaction.", _serviceName, methodName);
-                    _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
-
-                    transaction.Rollback();
-                    _unitOfWork.Dispose();
-
-                    Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, openingBalance, operationType, false, ex.Message);
-
-                    _logger.LogError("Record has been created for unsuccessfull {@operationName} operation. Record: {@record}", methodName, errorRecord);
-                    _errorRecordHandler.AddErrorRecord(errorRecord);
-                    throw;
-                }
+                Record record = CreateSuccessfullOperationRecordEntity(userId, openingBalance, operationType, account.Id);
+                _recordRepository.CreateRecord(record);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Newly created record for opening new account: {@record}", record);
+                transaction.Commit();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error has been occured in {@nameOfService} {@methodName} method!. Rolling back transaction.", _serviceName, methodName);
+                _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
+
+                transaction.Rollback();
+                _unitOfWork.Dispose();
+
+                Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, openingBalance, operationType, false, ex.Message);
+
+                _logger.LogError("Record has been created for unsuccessfull {@operationName} operation. Record: {@record}", methodName, errorRecord);
+                _errorRecordHandler.AddErrorRecord(errorRecord);
+                throw;
+            }
+            
 
             var mappedAccount = _mapper.Map<ReadAccountDTO>(account);
 
@@ -360,41 +360,41 @@ namespace Banking.Domain.Services
 
             
             using var transaction = _unitOfWork.BeginTransaction(); 
+            
+            _logger.LogDebug("Transaction has been started.");
+
+            try
             {
-                _logger.LogDebug("Transaction has been started.");
+                Bill bill = _mapper.Map<Bill>(createBillDTO);
+                bill.AccountId = account.Id;
+                bill.IsActive = true;
+                _billRepository.CreatBill(bill);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Newly created bill: {@bill}", bill);
 
-                try
-                {
-                    Bill bill = _mapper.Map<Bill>(createBillDTO);
-                    bill.AccountId = account.Id;
-                    bill.IsActive = true;
-                    _billRepository.CreatBill(bill);
-                    await _unitOfWork.SaveChangesAsync();
-                    _logger.LogInformation("Newly created bill: {@bill}", bill);
+                Record record = CreateSuccessfullOperationRecordEntity(userId, 0, operationType, account.Id);
+                _recordRepository.CreateRecord(record);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Newly created record for opening new account: {@record}", record);
 
-                    Record record = CreateSuccessfullOperationRecordEntity(userId, 0, operationType, account.Id);
-                    _recordRepository.CreateRecord(record);
-                    await _unitOfWork.SaveChangesAsync();
-                    _logger.LogInformation("Newly created record for opening new account: {@record}", record);
-
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("An error has been occured in {@nameOfService} {@methodName} method!. Rolling back transaction.", _serviceName, methodName);
-                    _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
-
-                    transaction.Rollback();
-                    _unitOfWork.ClearChangeTracker();
-                    _unitOfWork.Dispose();
-
-                    Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, 0, operationType, false, ex.Message);
-
-                    _logger.LogError("Record has been created for unsuccessfull {@operationName} operation. Record: {@record}", methodName, errorRecord);
-                    _errorRecordHandler.AddErrorRecord(errorRecord);
-                    throw;
-                }
+                transaction.Commit();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error has been occured in {@nameOfService} {@methodName} method!. Rolling back transaction.", _serviceName, methodName);
+                _logger.LogError("Exception message: {@exceptionMessage}", ex.Message);
+
+                transaction.Rollback();
+                _unitOfWork.ClearChangeTracker();
+                _unitOfWork.Dispose();
+
+                Record errorRecord = CreateUnSuccessfullOperationRecordEntity(userId, 0, operationType, false, ex.Message);
+
+                _logger.LogError("Record has been created for unsuccessfull {@operationName} operation. Record: {@record}", methodName, errorRecord);
+                _errorRecordHandler.AddErrorRecord(errorRecord);
+                throw;
+            }
+            
 
             var mappedAccount = _mapper.Map<ReadAccountDTO>(account);
 
