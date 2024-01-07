@@ -11,37 +11,29 @@ namespace Banking.Domain.BackgroundServices
     {
         private readonly ILogger<DailySpendResetService> _logger;
         private readonly IDbContextFactory<BankingDbContext> _contextFactory;
-
         public DailySpendResetService(ILogger<DailySpendResetService> logger, IDbContextFactory<BankingDbContext> contextFactory)
         {
             _logger = logger;
             _contextFactory = contextFactory;
         }
-
         public async Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("Processing daily spend reset at midnight...");
-
-            using (var dbContext = _contextFactory.CreateDbContext())
+            using var dbContext = _contextFactory.CreateDbContext();
+            using var transaction = dbContext.Database.BeginTransaction();
+            try
             {
-                try
-                {
-                    // Reset daily spend for all accounts
-                    await dbContext.Accounts.ForEachAsync(account => account.DailySpend = 0);
-                    await dbContext.SaveChangesAsync();
-                    _logger.LogInformation("Daily spend reset successfully completed.");
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error during daily spend reset: {message}", ex.Message);
-                }
-
-
+                // Reset daily spend for all accounts
+                await dbContext.Accounts.ForEachAsync(account => account.DailySpend = 0);
+                await dbContext.SaveChangesAsync();
+                _logger.LogInformation("Daily spend reset successfully completed.");
+                transaction.Commit();
             }
-
-            // return Task.FromResult(true);
-
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                _logger.LogError(ex, "Error during daily spend reset: {message}", ex.Message);
+            }
         }
     }
 }
