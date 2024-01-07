@@ -140,6 +140,17 @@
         "PhoneNumber" : "+301182367915",
         "Password" : "TestUser3Password86899296816",
         "Roles" : ["User"]
+    },
+
+    {
+        "Id" : 14,
+        "FirstName" : "IntegrationTestFirstName45395407782",
+        "LastName" : "IntegrationTestLastName45395407782",
+        "UserName" : "45395407782",
+        "Email" : "IntegrationTest45395407782@gmail.com",
+        "PhoneNumber" : "+301182367915",
+        "Password" : "TestUser3Password45395407782",
+        "Roles" : ["User"]
     }
 
 

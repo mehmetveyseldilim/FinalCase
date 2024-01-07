@@ -10,6 +10,10 @@ namespace Banking.Persistance.Contracts
 
         Task<Account?> GetAccountByUserId(int userId);
 
+        Task<Account?> GetAccountInformationsByUserId(int userId);
+
+        
+
         // Task<IEnumerable<Account>> GetAllAccountsAsync();
 
     }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using Quartz;
 
 
@@ -113,6 +114,8 @@ namespace Banking.API.Extensions
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTOValidator>();
             services.AddScoped<IValidator<LoginUserDTO>, LoginUserDTOValidator>();
             services.AddScoped<IValidator<CreateAccountDTO>, CreateAccountDTOValidator>();
+            services.AddScoped<IValidator<CreateDepositDTO>, CreateDepositDTOValidator>();
+            services.AddScoped<IValidator<CreateBillDTO>, CreateBillDTOValidator>();
 
 
             return services;
@@ -141,29 +144,29 @@ namespace Banking.API.Extensions
 
         public static IServiceCollection ConfigureQuartzJobs(this IServiceCollection services)
         {
-            // // Add Quartz services
-            // services.AddQuartz(q =>
-            // {
-            //     q.UseMicrosoftDependencyInjectionJobFactory();
+            // Add Quartz services
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
 
-            //     var dailySpendJobKey = JobKey.Create(nameof(DailySpendResetService));
-            //     var payBillsJobKey = JobKey.Create(nameof(PayBillsBackgroundService));
+                var dailySpendJobKey = JobKey.Create(nameof(DailySpendResetService));
+                var payBillsJobKey = JobKey.Create(nameof(PayBillsBackgroundService));
 
-            //     q.AddJob<DailySpendResetService>(dailySpendJobKey)
-            //         .AddTrigger(trigger => 
-            //                         trigger.ForJob(dailySpendJobKey)
-            //                         .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(0, 0)));
+                q.AddJob<DailySpendResetService>(dailySpendJobKey)
+                    .AddTrigger(trigger => 
+                                    trigger.ForJob(dailySpendJobKey)
+                                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(19, 55)));
 
-            //      q.AddJob<PayBillsBackgroundService>(payBillsJobKey)
-            //         .AddTrigger(trigger => 
-            //                         trigger.ForJob(payBillsJobKey)
-            //                         .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(18, 57)));                             
-            // });
+                 q.AddJob<PayBillsBackgroundService>(payBillsJobKey)
+                    .AddTrigger(trigger => 
+                                    trigger.ForJob(payBillsJobKey)
+                                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(20, 27)));                             
+            });
 
-            // services.AddQuartzHostedService(options => 
-            // {
-            //     options.WaitForJobsToComplete = true;
-            // });
+            services.AddQuartzHostedService(options => 
+            {
+                options.WaitForJobsToComplete = true;
+            });
 
 
             return services;

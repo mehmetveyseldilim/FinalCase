@@ -6,6 +6,9 @@ using Banking.Shared;
 using Banking.Shared.DTOs.Request;
 using Banking.Shared.DTOs.Response;
 using Banking.Shared.Exceptions;
+using Banking.Shared.RequestParameters;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 
 namespace Banking.Domain.Services
@@ -53,9 +56,8 @@ namespace Banking.Domain.Services
 
             _logger.LogDebug("Inside {@nameOfService}_{@methodName} Method", _serviceName, methodName);
             _logger.LogDebug("User id parameter is {@userId} and account opening balance is: {@balance}", userId, openingBalance);
+
             _logger.LogDebug("Creating an account for user id {@userId}", userId);
-
-
             Account account = CreateNewAccountEntity(userId, openingBalance);
             
             using var transaction = _unitOfWork.BeginTransaction(); 
@@ -92,7 +94,7 @@ namespace Banking.Domain.Services
 
             var mappedAccount = _mapper.Map<ReadAccountDTO>(account);
 
-            _logger.LogDebug("Returning mapped account: {@mappdAccount}", mappedAccount);
+            _logger.LogDebug("Returning mapped account: {@mappedAccount}", mappedAccount);
             return mappedAccount;
         }
 
@@ -149,7 +151,7 @@ namespace Banking.Domain.Services
 
         }
 
-        public async Task<ReadAccountDTO> WithdrawAsync(int userId, CreateWithdrawDTO createWithdrawDTO)
+        public async Task<ReadAccountDTO> WithdrawAsync(int userId, CreateWithdrawDTO createWithdrawDTO, int? recordId = null)
         {
             string methodName = nameof(WithdrawAsync);
             OperationType operationType = OperationType.Withdrawal;
@@ -177,7 +179,7 @@ namespace Banking.Domain.Services
                     throw new InsufficientFundsException(ExceptionErrorMessages.InsufficientFundsErrorMessage);
                 }
 
-                else if(account.DailyLimit < amount) 
+                else if(account.DailySpend + amount >= account.DailyLimit) 
                 {
                     _logger.LogError("Account daily limit is not enough for withdrawing {@amount} of money. Throwing {@exceptionName} exception."
                     , amount, nameof(DailyLimitExceededException));
@@ -185,7 +187,7 @@ namespace Banking.Domain.Services
                     throw new DailyLimitExceededException(ExceptionErrorMessages.DailyLimitExceededErrorMessage(account.Id));
                 }
 
-                else if(account.OperationLimit < amount) 
+                else if(!recordId.HasValue && account.OperationLimit < amount) 
                 {
                     _logger.LogError("Account operation limit is not enough for withdrawing {@amount} of money. Throwing {@exceptionName} exception."
                     , amount, nameof(OperationLimitExceededException));
@@ -200,6 +202,17 @@ namespace Banking.Domain.Services
                 _logger.LogDebug("Creating record");
                 Record record = CreateSuccessfullOperationRecordEntity(userId, amount, operationType, account.Id);
                 _recordRepository.CreateRecord(record);
+
+                if(recordId.HasValue == true) 
+                {
+                    var pendingRecord = await _recordRepository.GetPendingRecordById(recordId.Value);
+
+                    if(pendingRecord == null) throw new RecordNotFound(ExceptionErrorMessages.PendingRecordNotFoundErrorMessage(recordId.Value));
+
+                    pendingRecord.IsSuccessfull = true;
+                    pendingRecord.IsPending = false;
+                }
+
                 await _unitOfWork.SaveChangesAsync();
                 _logger.LogInformation("Record has been created and saved. Record: {@record}", record);
                 transaction.Commit();
@@ -226,7 +239,7 @@ namespace Banking.Domain.Services
 
         }
 
-        public async Task<Tuple<ReadAccountDTO, ReadAccountDTO>> TransferMoneyAsync(int senderUserId, CreateTransferMoneyDTO createTransferMoneyDTO)
+        public async Task<Tuple<ReadAccountDTO, ReadAccountDTO>> TransferMoneyAsync(int senderUserId, CreateTransferMoneyDTO createTransferMoneyDTO, int? recordId = null)
         {
             string methodName = nameof(TransferMoneyAsync);
             OperationType operationType = OperationType.Transfer;
@@ -262,7 +275,7 @@ namespace Banking.Domain.Services
                     throw new InsufficientFundsException(ExceptionErrorMessages.InsufficientFundsErrorMessage);
                 }
 
-                else if(senderAccount.DailyLimit < amount) 
+                else if(senderAccount.DailySpend + amount >= senderAccount.DailyLimit ) 
                 {
                     _logger.LogError("Sender account daily limit is not enough for sending {@amount} of money. Throwing {@exceptionName} exception."
                     , amount, nameof(OperationLimitExceededException));
@@ -270,7 +283,7 @@ namespace Banking.Domain.Services
                     throw new DailyLimitExceededException(ExceptionErrorMessages.DailyLimitExceededErrorMessage(senderAccount.Id));
                 }
 
-                else if(senderAccount.OperationLimit < amount) 
+                else if(!recordId.HasValue && senderAccount.OperationLimit < amount) 
                 {
                     _logger.LogError("Sender account operation limit is not enough for sending {@amount} of money. Throwing {@exceptionName} exception."
                     , amount, nameof(OperationLimitExceededException));
@@ -291,6 +304,16 @@ namespace Banking.Domain.Services
                 _logger.LogDebug("Creating record");
                 Record record = CreateSuccessfullOperationRecordEntity(senderUserId, amount, operationType, senderAccount.Id, receiverAccount.Id);
                 _recordRepository.CreateRecord(record);
+
+                if(recordId.HasValue == true) 
+                {
+                    var pendingRecord = await _recordRepository.GetPendingRecordById(recordId.Value);
+                    if(pendingRecord == null) throw new RecordNotFound(ExceptionErrorMessages.PendingRecordNotFoundErrorMessage(recordId.Value));
+
+                    pendingRecord.IsSuccessfull = true;
+                    pendingRecord.IsPending = false;
+                }
+
                 await _unitOfWork.SaveChangesAsync();
                 _logger.LogInformation("Record has been created and saved. Record: {@record}", record);
                 transaction.Commit();
@@ -343,6 +366,8 @@ namespace Banking.Domain.Services
                 try
                 {
                     Bill bill = _mapper.Map<Bill>(createBillDTO);
+                    bill.AccountId = account.Id;
+                    bill.IsActive = true;
                     _billRepository.CreatBill(bill);
                     await _unitOfWork.SaveChangesAsync();
                     _logger.LogInformation("Newly created bill: {@bill}", bill);
@@ -377,15 +402,46 @@ namespace Banking.Domain.Services
             return mappedAccount;
         }
 
-        public async Task<ReadAccountDTO> GetAccountByIdAsync(int accountId)
+        public async Task<ReadAccountDTO> GetAccountByUserIdIdAsync(int userId)
         {
-            Account account = await GetAccountByIdOrThrowExceptionAsync(accountId);
+            Account? account = await _accountRepository.GetAccountInformationsByUserId(userId);
+
+            if(account == null) 
+            {
+                throw new AccountNotFound(ExceptionErrorMessages.AccountNotFoundForGivenUserIdErrorMessage(userId));
+            }
 
             ReadAccountDTO mappedAccount = _mapper.Map<ReadAccountDTO>(account);
 
             _logger.LogDebug("Returning mapped account: {@mappedAccount}", mappedAccount);
             return mappedAccount;
         }
+
+        public async Task<IEnumerable<ReadRecordDTO>> GetUserTransactionHistoryAsync(int userId)
+        {
+            IEnumerable<Record> records = await _recordRepository.GetRecordsForUserAsync(userId);
+
+            IEnumerable<ReadRecordDTO> mappedRecords = _mapper.Map<IEnumerable<ReadRecordDTO>>(records);
+
+            return mappedRecords;
+        }
+
+        public async Task<PagedList<ReadRecordDTO>> GetAllRecordsAsync(RecordParameters recordParameters)
+        {
+            IEnumerable<Record> records = await _recordRepository.GetAllRecordsAsync(recordParameters);
+
+            IEnumerable<ReadRecordDTO> mappedRecords = _mapper.Map<IEnumerable<ReadRecordDTO>>(records);
+
+            var pagedList = PagedList<ReadRecordDTO>
+                            .ToPagedList(
+                                mappedRecords, 
+                                recordParameters.PageNumber,
+                                recordParameters.PageSize);
+
+            return pagedList;
+
+        }
+
 
 
         private async Task<Account> GetAccountByIdOrThrowExceptionAsync(int accountId) 
@@ -494,6 +550,48 @@ namespace Banking.Domain.Services
             return bill;
         }
 
+
+        public async Task ExecutePendingRecord(int recordId)
+        {
+            var pendingRecord = await _recordRepository.GetPendingRecordById(recordId);
+        
+
+            if(pendingRecord == null) throw new RecordNotFound(ExceptionErrorMessages.PendingRecordNotFoundErrorMessage(recordId));
+
+            int userId = pendingRecord.UserId;
+            int amount = pendingRecord.Amount;
+            
+
+            if(pendingRecord.OperationType == OperationType.Withdrawal) 
+            {
+                var createWithdrawDTO = new CreateWithdrawDTO() 
+                {
+                    Amount = amount
+                };
+
+                var result = await WithdrawAsync(userId, createWithdrawDTO, recordId);
+
+            }
+
+            else if(pendingRecord.OperationType == OperationType.Transfer) 
+            {
+
+                if(pendingRecord.ReceiverAccountId is int receiverAccountId) 
+                {
+                    var createTransferMoneyDTO = new CreateTransferMoneyDTO()
+                    {
+                        Amount = amount,
+                        ReceiverAccountId = receiverAccountId
+
+                    };
+
+                    var result = await TransferMoneyAsync(userId, createTransferMoneyDTO, recordId);
+                }
+           
+            }
+        }
+
+
         // For Data Seeding
         public async Task CreateAccountsAsync(IEnumerable<CreateAccountDTO> createAccountsDTOs)
         {
@@ -547,13 +645,5 @@ namespace Banking.Domain.Services
             _logger.LogDebug("Seeded Bills Count: {@count}", createBillDTOs.Count());
         }
 
-        public async Task<IEnumerable<ReadRecordDTO>> GetUserTransactionHistoryAsync(int userId)
-        {
-            IEnumerable<Record> records = await _recordRepository.GetRecordsForUserAsync(userId);
-
-            IEnumerable<ReadRecordDTO> mappedRecords = _mapper.Map<IEnumerable<ReadRecordDTO>>(records);
-
-            return mappedRecords;
-        }
     }
 }

@@ -16,12 +16,15 @@ namespace Banking.Domain.Profiles
 
             CreateMap<CreateAccountDTO, Account>();
             CreateMap<Account, ReadAccountDTO>();
+                // .ForMember(dest => dest.b);
 
             CreateMap<CreateBillDTO, Bill>();
             CreateMap<Bill, ReadBillDTO>();
 
             CreateMap<Record, ReadRecordDTO>()
                 .ForMember(dest => dest.OperationType, options => options.MapFrom(src => src.OperationType.ToString()));
+
+
         }
 
     }

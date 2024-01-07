@@ -126,7 +126,7 @@ namespace Banking.Domain.Services
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
                     _logger.LogError("The role {@role} does not exist. Throwing {@RoleNotFound} exception", role, nameof(RoleNotFound));
-                    throw new RoleNotFound(role);
+                    throw new RoleNotFound(ExceptionErrorMessages.RoleNotFoundErrorMessage(role));
                 }
             }
 
@@ -158,7 +158,7 @@ namespace Banking.Domain.Services
 
             if(_user == null) 
             {
-                throw new UserNotFound(userName);
+                throw new UserNotFound(ExceptionErrorMessages.UserNotFoundForGivenUserName(userName));
             }
 
             _logger.LogDebug("The user is : {@_user}", _user);

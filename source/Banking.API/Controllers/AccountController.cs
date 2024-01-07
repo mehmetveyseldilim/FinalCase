@@ -21,6 +21,21 @@ namespace Banking.API.Controllers
             _logger = logger;
         }
 
+        [HttpGet("account-informations")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<ReadAccountDTO>> GetAccountInformations()
+        {
+            _logger.LogDebug("{@controllerName} -- HTTP GET -- {@methodName}", nameof(AccountController), nameof(GetAccountInformations));
+
+            int userId = GetUserIdFromToken();
+
+            ReadAccountDTO dto = await _accountService.GetAccountByUserIdIdAsync(userId);
+
+            return Ok(dto);
+
+        }
+
+
         [HttpPost("create-account")]
         [Authorize(Roles = "User")]
         [ServiceFilter(typeof(FluentValidationFilter))]
@@ -39,7 +54,7 @@ namespace Banking.API.Controllers
 
         [HttpPost("deposit")]
         [Authorize(Roles = "User")]
-        // [ServiceFilter(typeof(FluentValidationFilter))]
+        [ServiceFilter(typeof(FluentValidationFilter))]
         public async Task<ActionResult<ReadAccountDTO>> Deposit(CreateDepositDTO createDepositDTO)
         {
             _logger.LogDebug("{@controllerName} -- HTTP POST -- {@methodName}", nameof(AccountController), nameof(Deposit));
@@ -80,6 +95,22 @@ namespace Banking.API.Controllers
             int userId = GetUserIdFromToken();
 
             Tuple<ReadAccountDTO, ReadAccountDTO> result = await _accountService.TransferMoneyAsync(userId, createTransferMoneyDTO);
+
+            return Ok(result);
+
+        }
+
+        [HttpPost("bill-payment")]
+        [Authorize(Roles = "User")]
+        [ServiceFilter(typeof(FluentValidationFilter))]
+        public async Task<ActionResult<ReadAccountDTO>> AddBill(CreateBillDTO createBillDTO)
+        {
+            _logger.LogDebug("{@controllerName} -- HTTP POST -- {@methodName}", nameof(AccountController), nameof(AddBill));
+            _logger.LogDebug("Create transfer money DTO: {@dto}", createBillDTO);
+
+            int userId = GetUserIdFromToken();
+
+            ReadAccountDTO result = await _accountService.AddAutomaticBillPaymentAsync(userId, createBillDTO);
 
             return Ok(result);
 
