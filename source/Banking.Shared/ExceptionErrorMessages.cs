@@ -21,5 +21,14 @@ namespace Banking.Shared
         public static string UserNotFoundForGivenUserName(string userName) => $"User with name: {userName} does not exist in the database";
 
         public static string DailyLimitExceededErrorMessage(int accountId) => $"Daily spending limit exceeded for account with id {accountId}";
+
+        public static string AccountAlreadyExistsErrorMessage(int userId) => $"The user with id '{userId}' already have an account.";
+
+        public static string PropertyNotFoundExceptionErrorMessage(string propertyName) => $"The property '{propertyName} does not exist'";
+
+        public static string RecordNotFoundErrorMessage(int recordId) => $"Record with id '{recordId} does not exist'";
+
+        public static string PendingRecordNotFoundErrorMessage(int recordId) => $"No pending record with id '{recordId}'";
+
     }
 }

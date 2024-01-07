@@ -16,5 +16,8 @@ namespace Banking.Shared.DTOs.Response
         public int DailyLimit {get; set;}
 
         public int OperationLimit {get; set;}
+
+        public IEnumerable<ReadBillDTO>? Bills {get; set;}
+
     }
 }

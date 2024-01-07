@@ -41,5 +41,15 @@ namespace Banking.Persistance.Repositories
             return account;
         }
 
+        public async Task<Account?> GetAccountInformationsByUserId(int userId)
+        {
+            var account = await _context.Accounts.Where(a => a.UserId == userId)
+                                .Include(account => account.Bills)
+                                .SingleOrDefaultAsync();
+
+            return account;
+
+
+        }
     }
 }
