@@ -20,6 +20,9 @@
 ## Usage
 
 Once the containers are up and running, you can access the application at `http://localhost:5154`
+If you have `Postman` you can import the Postman json collection and start testing the app right away.
+
+Also all operations have been executed and screenshotted. You can also access this documentation file when you clone this repository.
 
 
 ## Tests
