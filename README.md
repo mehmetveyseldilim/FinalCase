@@ -1,4 +1,4 @@
-# Virtual Pet Care Project
+# Banking API Project
 
 
 ## Prerequisites
@@ -20,6 +20,14 @@
 ## Usage
 
 Once the containers are up and running, you can access the application at `http://localhost:5154`
+
+
+## Tests
+
+1) `run dotnet test`
+
+Unit tests should be run just okay. Integration tests should be passed except one. This issue is related quartz library and once quartz service registration line in `Program.cs` commented out, it will be executed too.
+
 
 
 
