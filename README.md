@@ -29,7 +29,6 @@ All operations have been executed and screenshotted. You can also access this do
 
 1) `run dotnet test`
 
-Unit tests should be run just okay. Integration tests should be passed except one. This issue is related quartz library and once quartz service registration line in `Program.cs` commented out, it will be executed too.
 
 
 
