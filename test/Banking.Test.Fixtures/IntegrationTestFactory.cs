@@ -41,6 +41,7 @@ namespace Banking.Test.Fixtures
                                 .MigrationsHistoryTable("__EFMigrationsHistory", schema: BankingDbContext.SCHEMA_NAME));
                     });
                     services.EnsureDbCreated<TDbContext>();
+                    services.RemoveQuartzScheduler();
                 });
         }
 
